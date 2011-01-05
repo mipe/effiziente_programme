@@ -6,8 +6,9 @@ export CFLAGS
 .PHONY: all
 all: shortest-path
 
+.PHONY: tests
 test: shortest-path
-	tests/runtests
+	tests/runtests tests 2>/dev/null
 #	shortest-path <input-ref-littleendian|diff -u - output-ref
 #	shortest-path <input-bench-littleendian|diff -u - output-bench
 

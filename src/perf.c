@@ -49,7 +49,7 @@ void startPerformanceCounters( int argc, char** argv ) {
 
 	// append username from cmdline args
 	if ( argc > 1 ) 
-		strncat( fileName, argv[1], 10 );
+		strcat( fileName, argv[1] );
 	else
 		strncat( fileName, "anonymous", 9 );
 
