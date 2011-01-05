@@ -1,6 +1,6 @@
 
 CC      = gcc
-CFLAGS += -DPERF -Wall -O -std=gnu99
+CFLAGS += -DPERF -Wall -O4 -std=gnu99
 
 .PHONY: all
 all: shortest-path
