@@ -1,0 +1,12 @@
+Wichtige infos:
+	Momentaner source ist NICHT ansi kompatibel. Es werden gcc extensions verwendet.
+
+	Das programm sollte von jedem tester mit seinem namen als erstel command line arg aufgerufen werden.
+	Der name kommt dann in die logs, damit wir die maschinen auseinander halten können
+		
+	z.b.:
+		./shortest-path fabian <input >output
+	erzeugt eine logfile mit namen 'fabian' angehängt im ordner logs
+
+	Wenn das Programm gestartet wird sollte sich im selben ordner ein ordner names 'logs' befinden,
+	die logs werden dann da rein geschrieben.

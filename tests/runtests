@@ -1,0 +1,16 @@
+#!/bin/bash
+
+for test in input-*
+do
+	testName=${test#input-}
+	
+	../shortest-path $testName <$test >output-$testName
+
+	if [ $? -eq 0 ]
+	then
+		printf "%-50s PASSED\n" input$testName
+	else
+		printf "%-50s FAILED\n" input$testName
+	fi
+
+done

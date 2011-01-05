@@ -1,0 +1,7 @@
+
+# ignore binaries
+shortest-path
+src/shortest-path
+src/shortest-path.o
+src/perf.o
+
