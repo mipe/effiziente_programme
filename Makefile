@@ -1,7 +1,10 @@
 
+
+USER=
 CFLAGS=
 
 export CFLAGS
+export USER
 
 .PHONY: all
 all: shortest-path
@@ -22,4 +25,8 @@ shortest-path:
 clean:
 	$(MAKE) clean -C src
 	rm -f shortest-path
+
+.PHONY: clobber
+clobber: clean
+	$(MAKE) clobber -C tests
 

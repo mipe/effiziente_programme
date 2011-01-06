@@ -7,6 +7,7 @@ Wichtige infos:
 	z.b.:
 		./shortest-path fabian <input >output
 	erzeugt eine logfile mit namen 'fabian' angehängt im ordner logs
+	make test ruft shortest-path automatisch mit dem username des gerade eingeloggten users auf.
 
 	Wenn das Programm gestartet wird sollte sich im selben ordner ein ordner names 'logs' befinden,
 	die logs werden dann da rein geschrieben.

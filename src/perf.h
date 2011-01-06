@@ -4,6 +4,7 @@
 void startPerformanceCounters( int argc, char** argv );
 void stopPerformanceCounters();
 
+void printAllEvents();
 void printAvailableEvents();
 
 #endif /* PERF_H */

@@ -454,8 +454,6 @@ N_lit_execute,
   N_START_SUPER
 } PrimNum;
 
-static int no_dynamic=0; /* if true, no code is generated
-					     dynamically */
 static int static_super_number = 10000; /* number of ss used if available */
 #define MAX_STATE 9 /* maximum number of states */
 static int maxstates = MAX_STATE; /* number of states for stack caching */
@@ -2083,7 +2081,7 @@ const char const* const prim_names[]={
 
 static int is_relocatable(int p)
 {
-  return !no_dynamic && priminfos[p].start != NULL;
+  return priminfos[p].start != NULL;
 }
 
 /* static superinstruction stuff */
@@ -4050,7 +4048,6 @@ int main(int argc, char **argv, char **env)
 #ifdef PERF
 	startPerformanceCounters( argc, argv );
 #endif
-
   PrimNum data[MAX_INPUT_SIZE];
   PrimNum *start = data;
   size_t input_size;

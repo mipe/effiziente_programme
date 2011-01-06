@@ -97,6 +97,26 @@ void stopPerformanceCounters() {
 	}
 }
 
+void printAllEvents() {
+	// init PAPI
+	_ASSERT( PAPI_library_init( PAPI_VER_CURRENT ) == PAPI_VER_CURRENT, "Could not init papi." );
+
+	// print header
+	printf( "--- Available events ---\n" );
+	printf( "%-15s %s\n", "Name", "Description" );
+
+	// loop through all PAPI events supported on this plattform
+	int event = 0 | PAPI_PRESET_MASK; // the first event
+	do {
+		// get event info
+		PAPI_event_info_t info;
+		(void) _CALL_PAPI( PAPI_get_event_info( event, &info ) );
+
+		// print
+		printf( "%-15s %s\n", info.symbol, info.long_descr );
+	} while ( PAPI_enum_event( &event, PAPI_ENUM_ALL ) == PAPI_OK );
+}
+
 void printAvailableEvents() {
 	// init PAPI
 	_ASSERT( PAPI_library_init( PAPI_VER_CURRENT ) == PAPI_VER_CURRENT, "Could not init papi." );

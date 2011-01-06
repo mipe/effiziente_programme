@@ -1,12 +1,18 @@
 #!/bin/bash
 
+## check command line args
+# quiet flag
 if [[ "$*" =~ "-q" ]]; then quiet="true"; fi
 
-if [ -n $1 ] && [ -d $1 ]
+# username
+if [ -n $1 ]
 then
-	cd $1
+	user=`whoami`
+else
+	user=$1
 fi
 
+# run tests
 for test in input-*
 do
 	if [ ! -f $test ]; then continue; fi
@@ -15,9 +21,9 @@ do
 	
 	if [ -n $quiet ]
 	then
-		../shortest-path $testName <$test >output-$testName 2>/dev/null
+		../shortest-path $user-$testName <$test >output-$testName 2>/dev/null
 	else
-		../shortest-path $testName <$test >output-$testName
+		../shortest-path $user-$testName <$test >output-$testName
 	fi
 
 	if [ $? -eq 0 ]
@@ -28,3 +34,10 @@ do
 	fi
 
 done
+
+# run ertls std tests
+../shortest-path $user-$testName <input-ref-littleendian   | diff -u - xoutput-ref
+../shortest-path $user-$testName <input-bench-littleendian | diff -u - xoutput-bench
+
+
+
