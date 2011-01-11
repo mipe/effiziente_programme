@@ -19,8 +19,8 @@ debug:
 	mv src/shortest-path .
 
 .PHONY: gprof
-gprof: CFLAGS  += -pg
-gprof: LDFLAGS += -pg
+gprof: CFLAGS  += -pg -O0
+gprof: LDFLAGS += -pg -O0
 gprof: debug
 
 .PHONY: tests

@@ -4,11 +4,11 @@ CC      = gcc
 CFLAGS += -Wall -std=gnu99
 
 .PHONY: all
-all: CFLAGS += -O4
+all: CFLAGS += -O0
 all: shortest-path
 
 .PHONY: debug
-debug: CFLAGS += -ggdb -DPERF
+debug: CFLAGS += -O0 -ggdb -DPERF
 debug: shortest-path
 
 shortest-path: shortest-path.o perf.o -lpapi

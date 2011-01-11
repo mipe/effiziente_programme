@@ -146,13 +146,13 @@ for log in argv[1:]:
 	for line in open( log, "r" ):
 		count, event, descr = match( "\s*(\d+)\s+(\w+)\s+(\w.*)", line.strip("\n") ).groups()
 
-		add( test, event, date, count )
+		add( test, event, date, int(count) )
 
 # print statistics
-for test, perfCounts in tests.items():
+for test, perfCounts in sorted(tests.items()):
 	print test + ":"
 
-	for event, runs in perfCounts.items():
+	for event, runs in sorted(perfCounts.items()):
 		eventName, eventDescr, moreIsBetter = lookup( event )
 
 		print "\t", eventName.ljust(16), eventDescr
@@ -160,5 +160,5 @@ for test, perfCounts in tests.items():
 		runs.sort( reverse=moreIsBetter )
 
 		for count, date in runs:
-			print "\t\t", count.rjust(20), "  ", date
+			print "\t\t", str(count).rjust(20), "  ", date
 

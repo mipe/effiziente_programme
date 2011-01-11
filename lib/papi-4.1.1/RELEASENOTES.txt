@@ -1,0 +1,473 @@
+===============================================================================
+PAPI 4.1.1 RELEASE NOTES                                            01 Oct 2010
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP411.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This is a minor release of PAPI-C. It addresses a number of bugs and other
+issues that have surfaced since the 4.1.0 release.
+
+Visit the PAPI Reference pages for more information at:
+http://icl.cs.utk.edu/projects/papi/wiki/Main_Page
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+
+CHANGES IN PAPI 4.1.1 SINCE PAPI 4.1.0
+===============================================================================
+Bug Fixes:
+----------
+    * resolved confusion in event table naming for Intel Core, Core2 and Core
+      Duo processors; cleaned up Nehalem and Westmere event definitions.
+	* the --with-no-cpu-counters function and timing functions for AIX
+	  were fixed.
+	* compiler flags for AIX Fortran were fixed.
+	* doc directory is now preserved to prevent 'make clean' from entering an
+	  ininite loop.
+	* prevent passing -Wextra to libpfm build, which was throwing errors in
+	  that build under certain circumstances.
+	* fix a subtle problem in multiplexing in which final counter values could
+	  be under-reported. Changes the behavior of PAPI_stop when multiplexing.
+	  See the ChangeLog for further details.
+	
+Enhancements:
+-------------
+	* now supports attach/detach for perf_events, thanks to Gary Mohr.
+	* update cache information for recent Intel x86 processors.
+	* F_SETOWN_EX was implemented in perf_events to guarantee that each
+	  process recieves it's own interrupts. This fixes a bug in high
+	  interrupt rates reported by Rice.
+	* perf_events checks permissions at configuration rather than at start.
+	  Thanks to Gary Mohr.
+	* Pentium IV now supported under perf_events in kernel 2.6.35
+	* add a WARNING for tests cases that don't fail but have issues
+	  that may need to be addressed.
+	* add OS kernel version to component info struct; useful for enabling /
+	  diabling features in PAPI based on kernel version
+	* updated to terminal release (3.10) of libpfm.
+	* mmtimer support added for Altix / perf_events.
+	
+New Platforms:
+-------------
+	
+Deprecated Platforms:
+---------------------
+	* support for perf_counters in the 2.6.31 Linux kernel has been deprecated
+	
+New Components:
+---------------
+	* CoreTemp: exposes stuff in the /sys/class/hwmon directory
+
+Open Issues:
+-------------
+	* support for cross-compiling perf-events on new Cray architectures is
+	  still in development.
+	  
+Experimental:
+-------------
+
+Known Bugs:
+-----------
+
+
+===============================================================================
+PAPI 4.1.0 RELEASE NOTES                                            22 Jun 2010
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP410.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This is the second release of Component PAPI, or PAPI-C. See other references
+to PAPI-C, including the description in this file under PAPI 4.0.0 for details 
+on the differences between Classic PAPI and PAPI-C.
+
+This release includes significant code cleanup to eliminate compiler warnings
+and type inconsistencies and to eliminate memory leaks.
+
+We also now support embedded doxygen comments for documentation. See the PAPI
+website for more details.
+
+The component build environment has been restructured to make it easier to add
+and build components without modifying baseline PAPI code. See 
+/src/components/README for details.
+
+Visit the PAPI Reference pages for more information at:
+http://icl.cs.utk.edu/projects/papi/wiki/Main_Page
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+
+CHANGES IN PAPI 4.1.0 SINCE PAPI 4.0.0
+===============================================================================
+Bug Fixes:
+----------
+    * configure was mis-identifying some Pentium 4 processors
+    * the ctests/shlib test now tests against the shared math library, libm.so,
+      instead of libpapi.so, which works more predictably with library renaming.
+    * multiplexing was silently returning without setting multiplex TRUE in 
+      cases where no event had been assigned to an eventset. An event must be
+      added to an eventset or PAPI_assign_eventset_component() must be called
+      before multiplexing can be enabled. This silent error has been removed. 
+    * the perfmon and perf_events counter interfaces were not properly handling 
+      event unit masks. This has been fixed.
+    * PAPI_name_to_code() was not exiting properly in certain circumstances, 
+      failing on events where there should have been a match. This is corrected.
+    * a serious but insidious bug in the overflow logic was corrected. This bug 
+      would only show up when PAPI_overflow was called between calls to 
+      PAPI_add_event. Overflow would only be set for the last call of 
+      PAPI_overflow. This has  been corrected.
+	* IBM Blue Gene P systems were corrupting stack frames and crashing when the
+	  papi_get_event_info call was executed. This has been fixed.
+	* The PAPI cycles event was not working for IBM Blue Gene P. This is fixed.
+	* papi_native_avail was exiting improperly when using the -e option. 
+	  This caused problems with batch execution systems (like Blue Gene P). 
+	  This has been fixed.
+	* a significant number of memory leaks have been purged.
+	* compiler warning flags have been tightened and a range of warnings have
+	  been eliminated.
+	* removed implicit type conversions in prototypes.
+	
+
+Enhancements:
+-------------
+	* the utils/papi_version utility now reports four digits where the last digit
+	  matches the patch number.
+	* Pentium II and Athlon now use libpfm for event decoding like all other x86
+	  platforms.
+	* Doxygen documentation has been added to the API and components.
+	* Component compilation has been completely restructured. See
+	  /papi/src/components/README for details.
+	* PAPI can now be compiled with a no-cpu-counters option.
+	
+
+New Platforms:
+-------------
+	* the ultrasparc architecture has been resurrected
+	* freebsd support was migrated from PAPI 3.7
+	* Intel Nehalem EX and Westmere support has been added
+	
+Deprecated Platforms:
+---------------------
+	* IBM BG/L has been deprecated.
+	* POWER 3 and POWER4 have been deprecated
+
+New Components:
+---------------
+	* Infiniband: Experimental
+	* Lustre: Experimental
+	* example: provides simple test case and template code.
+
+Open Issues:
+-------------
+
+Experimental:
+-------------
+
+Known Bugs:
+-----------
+
+===============================================================================
+PAPI 4.0.0 RELEASE NOTES                                            19 Jan 2010
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP400.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This is the inaugural release of Component PAPI, or PAPI-C. It represents a 
+significant architectural change from PAPI 3.7.x and earlier. As such, your 
+application must be recompiled and relinked to libpapi, the PAPI library for 
+this version to work.
+PAPI-C is backward compatible with earlier versions of PAPI. All new library 
+features are supported through new APIs and all old APIs still work as expected.
+Applications instrumented for PAPI should continue to work as expected with no
+changes.
+The major change in PAPI-C is the support of multiple components, or counting 
+domains, in addition to the traditional hardware counters found in the cpu. The
+goal of this first release of PAPI-C is to provide a stable technology platform
+within which to explore the development and implementation of additional
+components.
+Although a small number of components are provided with this release, the major
+objective has been to guarantee that PAPI-C works at least as well as earlier
+PAPI releases and on the same range of hardware platforms. We think we have 
+achieved that goal.
+Visit the PAPI Reference pages for more information at:
+http://icl.cs.utk.edu/projects/papi/wiki/Main_Page
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+
+CHANGES IN PAPI 4.0.0 SINCE PAPI 3.7.2
+===============================================================================
+Bug Fixes:
+----------
+
+Enhancements:
+-------------
+- The perf_events linux kernel interface is supported for POWER and x86 in 
+  linux kernels 2.6.31 and above.
+- PAPI info now includes information on multicore heirarchy. This is reported
+  in the header of many tests.
+
+New Platforms:
+-------------
+- IBM Blue Gene P has been fully integrated into the code base. It still
+  suffers the same quirks and limitations as the earlier pre-release.
+
+Open Issues:
+-------------
+- Components are invoked from the configure line; Requires PAPI source code
+  modifications to add new components.
+
+Experimental:
+-------------
+
+Known Bugs:
+-----------
+- some tests involving overflow and profiling fail with linux perf_events
+- multiple event overflow only works for last event enabled on (at least)
+  Intel Core2 and Itanium architectures.
+- clock speeds on variable speed Intel systems can be misreported, leading to 
+  incorrect calculations of mflops
+- memory leaks may lead to (rare) seg faults on Pentium4 systems
+
+
+===============================================================================
+PAPI 3.7.2 RELEASE NOTES                                            02 Dec 2009
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP372.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This release is an incremental upgrade to PAPI 3.7.1. It fixes a mistake in 
+the 3.7.1 release by updating configure to better detect the proper counter
+interface in linux kernels. Along the way, it also cleans up a few issues 
+found in the 3.7.1 release.
+
+As always, if you identify strange behavior or reproducible bugs, please
+contact the PAPI team or visit the PAPI User Forum.
+
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+
+CHANGES IN PAPI 3.7.2 SINCE PAPI 3.7.1
+===============================================================================
+Bug Fixes:
+----------
+- fixed L3 cache size reporting for AMD Family 10h processors
+- fixed std deviation underflow in sdsc2 and sdsc4 tests
+- fixed bug in counter assignment for FreeBSD Atom implementation
+
+Enhancements:
+-------------
+- updated cache tables for Intel Nehalem i7 processors
+- configure provides better autodetection of 2.6.31 or 2.6.32 kernels and
+  perf_counter interface (in most cases)
+- configure provides better detection and autoselection of perfctr or perfmon 
+  drivers for linux
+- configure and sources have been modified to support perf_counter on
+  kernel 2.6.31 and perf_event on kernel 2.6.32
+- a papi.spec file has been added to simplify creation of rpms
+
+===============================================================================
+PAPI 3.7.1 RELEASE NOTES                                            13 Nov 2009
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP371.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This release is an incremental upgrade to PAPI 3.7.0. It cleans up several 
+issues found in the 3.7.0 release and provides better support for the 
+perf_counter interface introduced in Linux kernel 2.6.31.
+
+As always, if you identify strange behavior or reproducible bugs, please
+contact the PAPI team or visit the PAPI User Forum.
+
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+NOTE: If you are looking for the man pages and other user documentation, look
+online. We decided we could provide better and more timely support by 
+maintaining just the online documentation. Let us know if you think this is a
+bad decision.
+
+
+CHANGES IN PAPI 3.7.1 SINCE PAPI 3.7.0
+===============================================================================
+Bug Fixes:
+----------
+- fixed long standing subtle multiplexing bug in which TIDs and PIDs would get
+  confused. TIDs would then get lost leading to long term instability.
+- fixed unit mask handling in perf_counters
+- fixed uninitialized string issue in /proc/cpuinfo parsing
+- fixed event reporting errors for various Opteron Family 10h models
+
+Enhancements:
+-------------
+- FreeBSD support for Intel i7
+- cleaned up libpapi.so naming for RedHat rpms
+- cleaned up various other issues for rpms per RedHat
+- autodetection of 2.6.31 perf_counter interface (in most cases)
+- enhanced packaging options in configure to support building either static or 
+  shared libraries independently
+
+New Platforms:
+-------------
+- Support for the perf_counters (PCL: Performance Counters for Linux) interface
+  for Linux kernel 2.6.31 and later has been more completely tested on a 
+  broader range of platforms, including Opteron, Core2, i7, and POWER.
+  It successfully performs basic counting operations and handles many multiplex,
+  overflow and profiling situations. It is still not as extensivelytested as the
+  perfmon or perfctr interfaces, but is ready for work. Caveat Emptor.
+
+Major Issues:
+-------------
+- see 3.7.0
+
+Experimental:
+-------------
+
+Known Bugs:
+-----------
+- see 3.7.0
+
+===============================================================================
+PAPI 3.7.0 RELEASE NOTES                                            08 Sep 2009
+===============================================================================
+
+This file documents changes in recent PAPI releases in inverse chronological
+order.
+
+For details on installing PAPI on your machine, consult the INSTALL.txt file
+in this directory.
+
+For specific and detailed information on changes made in this release, grep
+the ChangeLogP370.txt file for keywords of interest or go directly to the PAPI
+cvs tree.
+
+
+GENERAL NOTES
+===============================================================================
+This release is a recommended upgrade to PAPI 3.6.x. It addresses a number of 
+open issues and introduces support for several new platforms, including Intel
+Nehalem (Core i7), Atom, POWER7 and Niagara2.
+
+If you are currently using PAPI 3.6.x or earlier, it is recommended that you 
+upgrade to this version.
+
+As always, if you identify strange behavior or reproducible bugs, please
+contact the PAPI team or the PAPI User Forum.
+
+And visit the PAPI website for the latest updates:
+http://icl.cs.utk.edu/papi/
+
+NOTE: If you are looking for the man pages and other user documentation, look
+online. We decided we could provide better and more timely support by 
+maintaining just the online documentation. Let us know if you think this is a
+bad decision.
+
+
+CHANGES IN PAPI 3.7.0 SINCE PAPI 3.6.2
+===============================================================================
+Bug Fixes:
+----------
+- many minor bugs fixed in tests and in specific cpu components
+- fixed support for Intel CoreDuo (not Core2) broken in PAPI 3.6.x
+- fixed library init failure on AIX Power6 when executable names > 32 char long
+- fixed avail.F construct that was crashing some versions of gfortran
+
+Enhancements:
+-------------
+- A new utility has been added: papi_version
+- Added 4 new PRESET events to better handle SIMD instructions on Intel cpus:
+  PAPI_DP_OPS - counts double precision scalar and vector FP operations
+  PAPI_SP_OPS - counts single precision scalar and vector FP operations
+  PAPI_VEC_DP - counts double precision vector instructions
+  PAPI_VEC_SP - counts single precision vector instructions
+- FreeBSD support upgrade and new support for Atom and Intel Core2
+
+New Platforms:
+-------------
+- Intel Core i7 (Nehalem) support for 7 core counters; no support for 
+  Uncore counters
+- Intel Atom 
+- AMD Opteron Barcelona, Shanghai, Istanbul event table support
+- POWER7 support for Linux thanks to IBM
+- Sun Niagara2 support thanks to Aachen University, Germany
+- Resurrected support for PAPI on Windows; now supports Intel Core2 and Core i7
+
+Major Issues:
+-------------
+- PAPI for Windows does not support 64-bit versions due to compiler issues.
+
+Experimental:
+-------------
+- Support for the perf_counters (PCL: Performance Counters for Linux) interface
+  is available as a technology pre-release for Linux kernel 2.6.31 and later.
+  This has been tested on IBM POWER and Intel Core2 and successfully performs 
+  basic counting operations. It has not been stress tested. Caveat Emptor.
+
+Known Bugs:
+-----------
+- clock speeds are occasionally not reported correctly for systems with
+  SpeedStep technology.
+- Intel Atom crashes on a small number of standard tests. 
+
+===============================================================================
+PAPI 3.6.2 RELEASE NOTES                                            03 Oct 2008
+NOTE: For releases prior to PAPI 3.7.0, please reference the tarball for an earlier
+release, or use the on-line cvs viewer at: 
+http://icl.cs.utk.edu/viewcvs/viewcvs.cgi/PAPI/papi/
+to see earlier versions of this file.
+===============================================================================

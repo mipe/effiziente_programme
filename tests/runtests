@@ -44,4 +44,12 @@ do
 	fi
 done
 
+diff -u xoutput-ref output-ref-littleendian > diffFile
+if [ -s diffFile ]; then echo "Results in ref-littlenedian differ from ertls file!"; fi
+
+diff -u xoutput-bench output-bench-littleendian > diffFile
+if [ -s diffFile ]; then echo "Results in bench-littlenedian differ from ertls file!"; fi
+
+rm diffFile
+
 

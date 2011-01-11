@@ -1,0 +1,85 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  us/call  us/call  name    
+100.12      0.02     0.02    23108     0.87     0.87  transitions
+  0.00      0.02     0.00   903795     0.00     0.00  cost_codesize
+  0.00      0.02     0.00   202153     0.00     0.00  is_relocatable
+  0.00      0.02     0.00    35463     0.00     0.00  hash_super
+  0.00      0.02     0.00    35102     0.00     0.00  lookup_super
+  0.00      0.02     0.00    23108     0.00     0.00  init_waypoints
+  0.00      0.02     0.00    18494     0.00     0.00  printinst
+  0.00      0.02     0.00     6391     0.00     3.13  optimize_rewrite
+  0.00      0.02     0.00        1     0.00     0.00  prepare_super_table
+  0.00      0.02     0.00        1     0.00     0.00  startPerformanceCounters
+  0.00      0.02     0.00        1     0.00     0.00  stopPerformanceCounters
+
+			Call graph
+
+
+granularity: each sample hit covers 2 byte(s) for 49.94% of 0.02 seconds
+
+index % time    self  children    called     name
+                0.02    0.00   23108/23108       optimize_rewrite [2]
+[1]    100.0    0.02    0.00   23108         transitions [1]
+                0.00    0.00  800720/903795      cost_codesize [4]
+-----------------------------------------------
+                0.00    0.02    6391/6391        main [3]
+[2]    100.0    0.00    0.02    6391         optimize_rewrite [2]
+                0.02    0.00   23108/23108       transitions [1]
+                0.00    0.00  202081/202153      is_relocatable [5]
+                0.00    0.00  103075/903795      cost_codesize [4]
+                0.00    0.00   33915/35102       lookup_super [7]
+                0.00    0.00   23108/23108       init_waypoints [8]
+                0.00    0.00   18494/18494       printinst [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]    100.0    0.00    0.02                 main [3]
+                0.00    0.02    6391/6391        optimize_rewrite [2]
+                0.00    0.00       1/1           startPerformanceCounters [11]
+                0.00    0.00       1/1           prepare_super_table [10]
+                0.00    0.00       1/1           stopPerformanceCounters [12]
+-----------------------------------------------
+                0.00    0.00  103075/903795      optimize_rewrite [2]
+                0.00    0.00  800720/903795      transitions [1]
+[4]      0.0    0.00    0.00  903795         cost_codesize [4]
+-----------------------------------------------
+                0.00    0.00      72/202153      prepare_super_table [10]
+                0.00    0.00  202081/202153      optimize_rewrite [2]
+[5]      0.0    0.00    0.00  202153         is_relocatable [5]
+-----------------------------------------------
+                0.00    0.00     361/35463       prepare_super_table [10]
+                0.00    0.00   35102/35463       lookup_super [7]
+[6]      0.0    0.00    0.00   35463         hash_super [6]
+-----------------------------------------------
+                0.00    0.00    1187/35102       prepare_super_table [10]
+                0.00    0.00   33915/35102       optimize_rewrite [2]
+[7]      0.0    0.00    0.00   35102         lookup_super [7]
+                0.00    0.00   35102/35463       hash_super [6]
+-----------------------------------------------
+                0.00    0.00   23108/23108       optimize_rewrite [2]
+[8]      0.0    0.00    0.00   23108         init_waypoints [8]
+-----------------------------------------------
+                0.00    0.00   18494/18494       optimize_rewrite [2]
+[9]      0.0    0.00    0.00   18494         printinst [9]
+-----------------------------------------------
+                0.00    0.00       1/1           main [3]
+[10]     0.0    0.00    0.00       1         prepare_super_table [10]
+                0.00    0.00    1187/35102       lookup_super [7]
+                0.00    0.00     361/35463       hash_super [6]
+                0.00    0.00      72/202153      is_relocatable [5]
+-----------------------------------------------
+                0.00    0.00       1/1           main [3]
+[11]     0.0    0.00    0.00       1         startPerformanceCounters [11]
+-----------------------------------------------
+                0.00    0.00       1/1           main [3]
+[12]     0.0    0.00    0.00       1         stopPerformanceCounters [12]
+-----------------------------------------------
+
+Index by function name
+
+   [4] cost_codesize (shortest-path.c) [7] lookup_super (shortest-path.c) [11] startPerformanceCounters
+   [6] hash_super (shortest-path.c) [2] optimize_rewrite  [12] stopPerformanceCounters
+   [8] init_waypoints         [10] prepare_super_table (shortest-path.c) [1] transitions
+   [5] is_relocatable (shortest-path.c) [9] printinst

@@ -4056,13 +4056,21 @@ int main(int argc, char **argv, char **env)
   int i;
 
   prepare_super_table();
+
+	// super_costs[state_transitions->super].offset;
+
+
+
+	struct super_state* l;
+//	for ( l = state_transitions; l != NULL; l = l->next ) fprintf( stderr, "%d:%d, ", l->super, ss_cost(l->super) );//prim_names[l->super] );
+//	fprintf( stderr, "\n%s", c );
+
   input_size = fread(data,sizeof(PrimNum),MAX_INPUT_SIZE,stdin);
   for (i = 0; i<input_size; i++)
     if (data[i] == -1) {
       optimize_rewrite(start, data+i-start);
       start = data+i+1;
     }
-
 #ifdef PERF
 	stopPerformanceCounters();
 #endif

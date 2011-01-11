@@ -31,7 +31,9 @@
 static int       _EVENTS[]   = { PAPI_TOT_INS,
                                  PAPI_TOT_CYC,	
                                  PAPI_L2_TCM,
-						         PAPI_BR_MSP };
+                                 PAPI_L2_ICM,
+                                 PAPI_L2_DCM,
+                                 PAPI_BR_MSP };
 static long long _COUNTERS[_NUM_EVENTS];
 static FILE*     _LOG_FILE;
 
