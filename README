@@ -15,4 +15,6 @@ Wichtige infos:
 Vorgeschlagene optimierungen:
 	1) Die globale Variable 'no_dynamic' wird statisch auf 0 gesetzt und nie wieder verändert.
 	   Man könnte sie einfach weglassen. (gcc -O3 entfernt es nicht selbst)
+	2) Das flag relocatable ist nur bei der allerersten instruktion wahr, und bei der ersten instruktion
+	   ist es unwichtig. --> alle vorkommisse von is_relocatable und relocatable kann man weglassen.
 
