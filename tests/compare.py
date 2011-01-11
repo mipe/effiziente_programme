@@ -3,6 +3,7 @@
 from sys      import argv
 from operator import itemgetter
 from re       import match
+from datetime import datetime
 
 # PAPI events
 events = [
@@ -115,7 +116,7 @@ events = [
 	('PAPI_VEC_DP',  'Double precision vector/SIMD instructions',                                               False)
 ]
 
-statistics = {}
+tests = {}
 
 # lookup descriptor tupel for event.
 def lookup( name ):
@@ -124,27 +125,36 @@ def lookup( name ):
 			return e
 
 # add data to statistics
-def add( logFile, count, event ):
-	data = statistics.setdefault( event, [] )
+def add( test, event, date, count ):
+	# get the performance counts for test
+	perfCounts = tests.setdefault( test, {} )
+	# get the data for the event
+	eventData  = perfCounts.setdefault( event, [] )
 
-	data.append( (count,logFile) )
+	# append data from run
+	eventData.append( (count,date) )
 
 ## MAIN LOOP
 # gather statistics
 for log in argv[1:]:
+	date, test = match( ".*perf_log-(.{19})-(.*)", log ).groups()
+
 	for line in open( log, "r" ):
 		count, event, descr = match( "\s*(\d+)\s+(\w+)\s+(\w.*)", line.strip("\n") ).groups()
 
-		add( log, count, event )
+		add( test, event, date, count )
 
 # print statistics
-for item in statistics.items():
-	event = lookup( item[0] )
+for test, perfCounts in tests.items():
+	print test + ":"
 
-	item[1].sort( key=itemgetter(0), reverse=event[2] )
+	for event, runs in perfCounts.items():
+		eventName, eventDescr, moreIsBetter = lookup( event )
 
-	print event[0].ljust(16), event[1]
-	
-	for entry in item[1]:
-		print entry[0].rjust(20), "  ", entry[1]
+		print "\t", eventName.ljust(16), eventDescr
+
+		runs.sort( reverse=moreIsBetter )
+
+		for count, date in runs:
+			print "\t\t", count.rjust(20), "  ", date
 

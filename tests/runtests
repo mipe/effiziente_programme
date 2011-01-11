@@ -1,43 +1,47 @@
 #!/bin/bash
 
+### CHECK IF FILE HAS BEEN COMPILED
+if [ ! -e ../shortest-path ]
+then
+	echo -e '\E[37;44m'"\033[1m>>>>>> You do know that the program hasn't been compiled yet, do you? <<<<<<\033[0m"
+	echo -e '\E[37;44m'"\033[1m>>>>>> Please run either 'make all', 'make debug' or 'make gprof' <<<<<<\033[0m"
+	exit 1 
+fi
+
 ## check command line args
 # quiet flag
 if [[ "$*" =~ "-q" ]]; then quiet="true"; fi
 
 # username
-if [ -n $1 ]
-then
-	user=`whoami`
-else
-	user=$1
-fi
+user=$1
 
 # run tests
 for test in input-*
 do
+	# ignore folders that begin with "input-"
 	if [ ! -f $test ]; then continue; fi
 
+	# get the name of the test
 	testName=${test#input-}
+
+	# print status
+	printf "> %-50s" input-$testName
 	
-	if [ -n $quiet ]
-	then
-		../shortest-path $user-$testName <$test >output-$testName 2>/dev/null
-	else
-		../shortest-path $user-$testName <$test >output-$testName
-	fi
+	# RUN TEST
+	../shortest-path "$user-$testName" <"input-$testName" >"output-$testName"
+	# store return code
+	retCode=$?
 
-	if [ $? -eq 0 ]
-	then
-		printf "%-50s PASSED\n" input$testName
-	else
-		printf "%-50s FAILED\n" input$testName
-	fi
+	# rename gmon.out file if present
+	if [ -f gmon.out ]; then mv gmon.out `date +"logs/gmon.out-%02d_%02m_%G-%T-$user-$test"`; fi
 
+	# print if test passed or failed
+	if [ $retCode -eq 0 ]
+	then
+		printf "PASSED\n"
+	else
+		printf "FAILED\n"
+	fi
 done
-
-# run ertls std tests
-../shortest-path $user-$testName <input-ref-littleendian   | diff -u - xoutput-ref
-../shortest-path $user-$testName <input-bench-littleendian | diff -u - xoutput-bench
-
 
 

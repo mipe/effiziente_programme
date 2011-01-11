@@ -1,25 +1,31 @@
-
+# MAIN MAKEFILE
 
 USER=
 CFLAGS=
+LDFLAGS=
 
 export CFLAGS
+export LDFLAGS
 export USER
 
 .PHONY: all
-all: shortest-path
+all:
+	$(MAKE) all   -C src
+	mv src/shortest-path .
 
 .PHONY: debug
-debug: CFLAGS += -ggdb
-debug: shortest-path 
+debug:
+	$(MAKE) debug -C src
+	mv src/shortest-path .
+
+.PHONY: gprof
+gprof: CFLAGS  += -pg
+gprof: LDFLAGS += -pg
+gprof: debug
 
 .PHONY: tests
-test: shortest-path
+test:
 	$(MAKE) test -C tests
-
-shortest-path:
-	$(MAKE) all -C src
-	mv src/shortest-path .
 
 .PHONY: clean
 clean:

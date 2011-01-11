@@ -1,13 +1,15 @@
+# SRC MAKEFILE
 
 CC      = gcc
-CFLAGS += -DPERF -Wall -O4 -std=gnu99
+CFLAGS += -Wall -std=gnu99
 
 .PHONY: all
+all: CFLAGS += -O4
 all: shortest-path
 
 .PHONY: debug
-debug:
-	mv src/shortest-path .
+debug: CFLAGS += -DPERF
+debug: shortest-path
 
 shortest-path: shortest-path.o perf.o -lpapi
 
@@ -17,3 +19,4 @@ perf.o:          perf.c perf.h
 .PHONY: clean
 clean:
 	rm -f shortest-path shortest-path.o perf.o
+
