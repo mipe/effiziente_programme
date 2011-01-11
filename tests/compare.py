@@ -4,6 +4,7 @@ from sys      import argv
 from operator import itemgetter
 from re       import match
 from datetime import datetime
+from os.path  import exists
 
 # PAPI events
 events = [
@@ -137,6 +138,9 @@ def add( test, event, date, count ):
 ## MAIN LOOP
 # gather statistics
 for log in argv[1:]:
+	if not exists(log):
+		continue
+
 	date, test = match( ".*perf_log-(.{19})-(.*)", log ).groups()
 
 	for line in open( log, "r" ):
