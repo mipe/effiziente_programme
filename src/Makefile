@@ -8,7 +8,7 @@ all: CFLAGS += -O4
 all: shortest-path
 
 .PHONY: debug
-debug: CFLAGS += -DPERF
+debug: CFLAGS += -ggdb -DPERF
 debug: shortest-path
 
 shortest-path: shortest-path.o perf.o -lpapi
