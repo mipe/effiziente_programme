@@ -1,10 +1,9 @@
 # SRC MAKEFILE
 
 CC      = gcc
-CFLAGS += -Wall -std=gnu99
+CFLAGS += -Wall -std=gnu99 -O3 -DPERF
 
 .PHONY: all
-all: CFLAGS += -O4
 all: shortest-path
 
 .PHONY: debug
