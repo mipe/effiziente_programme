@@ -36,3 +36,8 @@ clean:
 clobber: clean
 	$(MAKE) clobber -C tests
 
+.PHONY: compare
+compare:
+	python tests/compare.py tests/logs/perf*
+
+

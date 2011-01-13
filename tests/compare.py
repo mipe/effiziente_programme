@@ -150,6 +150,8 @@ for log in argv[1:]:
 		add( test, event, date, sha, count )
 
 ### print statistics
+NUM_RESULTS_SHOWN = 5
+
 for test, perfCounts in tests.items():
 	# print name of test
 	print test + ":"
@@ -177,6 +179,10 @@ for test, perfCounts in tests.items():
 
 		# print results
 		for i in range(0,len(runs)-1):
+			# show only the best results
+			if i >= NUM_RESULTS_SHOWN:
+				break
+
 			count,     date, sha = runs[i]
 			nextCount, _   , _   = runs[i+1]
 		
