@@ -454,11 +454,11 @@ N_lit_execute,
   N_START_SUPER
 } PrimNum;
 
-static int no_dynamic=0; /* if true, no code is generated
+static const int no_dynamic=0; /* if true, no code is generated
 					     dynamically */
-static int static_super_number = 10000; /* number of ss used if available */
+static const int static_super_number = 10000; /* number of ss used if available */
 #define MAX_STATE 9 /* maximum number of states */
-static int maxstates = MAX_STATE; /* number of states for stack caching */
+static const int maxstates = MAX_STATE; /* number of states for stack caching */
 
 FILE *output;
 
@@ -3880,7 +3880,7 @@ static int cost_nexts(int prim)
 }
 
 typedef int Costfunc(int);
-Costfunc *ss_cost =  /* cost function for optimize_bb */
+const Costfunc *ss_cost =  /* cost function for optimize_bb */
 cost_codesize;
 
 struct {
