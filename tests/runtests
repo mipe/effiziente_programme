@@ -25,9 +25,10 @@ do
 	testName=${test#input-}
 
 	## id is appended to name of logfiles to identify test runs
-	# id ==  name of test + 1st 7 chars of SHA1 of current commit + user name
 	sha=`git rev-parse HEAD`
-	id=$testName-`expr substr $sha 1 7`-$user
+	sha=${sha:0:7}
+	# id ==  1st 7 chars from SHA1 of current commit + name of test + user name
+	id=${sha:0:7}-$testName-$user
 	# current date, prepended to id for gmon.out files
 	now=`date +"%02d_%02m_%G-%T"`
 
@@ -57,8 +58,8 @@ done
 ../shortest-path "ertl-test" <"input-bench-littleendian" | diff -u - xoutput-bench >diff-bench
 
 # diffs should be empty
-if [ -s diff-ref   ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-ref-littlendian differs from ertls!   \033[0m"; fi
-if [ -s diff-bench ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-bench-littlendian differs from ertls! \033[0m"; fi
+if [ -s diff-ref   ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-ref-littlendian differs from ertls!   \033[0m"; cat diff-ref;   fi
+if [ -s diff-bench ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-bench-littlendian differs from ertls! \033[0m"; cat diff-bench; fi
 
 # clean up useless test files
 rm -f logs/*-ertl-test gmon.out diff-ref diff-bench

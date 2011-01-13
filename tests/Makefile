@@ -10,4 +10,5 @@ test:
 .PHONY: clobber
 clobber:
 	-rm logs/*
+	-rm output-*
 

@@ -127,14 +127,14 @@ def lookup( name ):
 			return e
 
 # add data to statistics
-def add( test, event, date, count ):
+def add( test, event, date, sha, count ):
 	# get the performance counts for test
 	perfCounts = tests.setdefault( test, {} )
 	# get the data for the event
 	eventData  = perfCounts.setdefault( event, [] )
 
 	# append data from run
-	eventData.append( (int(count),date) )
+	eventData.append( (int(count),date, sha) )
 
 ## MAIN LOOP
 # gather statistics
@@ -142,12 +142,12 @@ for log in argv[1:]:
 	if not exists(log):
 		continue
 
-	date, test = match( ".*perf_log-(.{19})-(.*)", log ).groups()
+	date, sha, test = match( ".*perf_log-(.{19})-(.{7})-(.*)", log ).groups()
 
 	for line in open( log, "r" ):
 		count, event, descr = match( "\s*(\d+)\s+(\w+)\s+(\w.*)", line.strip("\n") ).groups()
 
-		add( test, event, date, count )
+		add( test, event, date, sha, count )
 
 ### print statistics
 for test, perfCounts in tests.items():
@@ -173,14 +173,14 @@ for test, perfCounts in tests.items():
 		runs += [runs.pop()] * 2 # append dummy entry to runs
 
 		# print header
-		print "\t\t %20s %15s %22s" % ("COUNT", "IMPROVEMENT", "DATE")
+		print "\t\t %20s  %15s %22s %10s" % ("COUNT", "IMPROVEMENT", "DATE", "SHA1")
 
 		# print results
 		for i in range(0,len(runs)-1):
-			count,     date = runs[i]
-			nextCount, _    = runs[i+1]
+			count,     date, sha = runs[i]
+			nextCount, _   , _   = runs[i+1]
 		
 			improvement = ((Decimal(nextCount)/Decimal(count) - 1) * 100)
 
-			print "\t\t %20d %15.2f%% %22s" % (count, improvement, date)
+			print "\t\t %20d %15.2f%% %22s %10s" % (count, improvement, date, sha)
 
