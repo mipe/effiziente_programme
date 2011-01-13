@@ -3,8 +3,8 @@
 ### CHECK IF FILE HAS BEEN COMPILED
 if [ ! -e ../shortest-path ]
 then
-	echo -e '\E[37;44m'"\033[1m>>>>>> You do know that the program hasn't been compiled yet, do you? <<<<<<\033[0m"
-	echo -e '\E[37;44m'"\033[1m>>>>>> Please run either 'make all', 'make debug' or 'make gprof' <<<<<<\033[0m"
+	echo -e '\E[1;31m'"\033[1m>>>>>> You do know that the program hasn't been compiled yet, do you? <<<<<<\033[0m"
+	echo -e '\E[1;31m'"\033[1m>>>>>> Please run either 'make all', 'make debug' or 'make gprof'     <<<<<<\033[0m"
 	exit 1 
 fi
 
@@ -24,16 +24,23 @@ do
 	# get the name of the test
 	testName=${test#input-}
 
+	## id is appended to name of logfiles to identify test runs
+	# id ==  name of test + 1st 7 chars of SHA1 of current commit + user name
+	sha=`git rev-parse HEAD`
+	id=$testName-`expr substr $sha 1 7`-$user
+	# current date, prepended to id for gmon.out files
+	now=`date +"%02d_%02m_%G-%T"`
+
 	# print status
 	printf "> %-50s" input-$testName
-	
+
 	# RUN TEST
-	../shortest-path "$user-$testName" <"input-$testName" >"output-$testName"
+	../shortest-path "$id" <"input-$testName" >"output-$testName"
 	# store return code
 	retCode=$?
 
 	# rename gmon.out file if present
-	if [ -f gmon.out ]; then mv gmon.out `date +"logs/gmon.out-%02d_%02m_%G-%T-$user-$test"`; fi
+	if [ -f gmon.out ]; then mv gmon.out `date +"logs/gmon.out-$now-$id"`; fi
 
 	# print if test passed or failed
 	if [ $retCode -eq 0 ]
@@ -43,5 +50,17 @@ do
 		printf "FAILED\n"
 	fi
 done
+
+#### check test files against ertls files
+# run tests
+../shortest-path "ertl-test" <"input-ref-littleendian"   | diff -u - xoutput-ref   >diff-ref
+../shortest-path "ertl-test" <"input-bench-littleendian" | diff -u - xoutput-bench >diff-bench
+
+# diffs should be empty
+if [ -s diff-ref   ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-ref-littlendian differs from ertls!   \033[0m"; fi
+if [ -s diff-bench ]; then echo -e '\E[1;31m'"\033[1m OUTPUT FROM input-bench-littlendian differs from ertls! \033[0m"; fi
+
+# clean up useless test files
+rm -f logs/*-ertl-test gmon.out diff-ref diff-bench
 
 

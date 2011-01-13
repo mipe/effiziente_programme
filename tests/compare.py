@@ -5,6 +5,7 @@ from operator import itemgetter
 from re       import match
 from datetime import datetime
 from os.path  import exists
+from decimal  import Decimal
 
 # PAPI events
 events = [
@@ -133,7 +134,7 @@ def add( test, event, date, count ):
 	eventData  = perfCounts.setdefault( event, [] )
 
 	# append data from run
-	eventData.append( (count,date) )
+	eventData.append( (int(count),date) )
 
 ## MAIN LOOP
 # gather statistics
@@ -148,17 +149,38 @@ for log in argv[1:]:
 
 		add( test, event, date, count )
 
-# print statistics
+### print statistics
 for test, perfCounts in tests.items():
+	# print name of test
 	print test + ":"
-
+	
 	for event, runs in perfCounts.items():
+		# if there are no results, ignore this event
+		if len(runs) == 0:
+			continue
+
 		eventName, eventDescr, moreIsBetter = lookup( event )
 
+		# print name and desription of PAPI performance count event
 		print "\t", eventName.ljust(16), eventDescr
 
+		# sort results, best should be first
 		runs.sort( reverse=moreIsBetter )
 
-		for count, date in runs:
-			print "\t\t", count.rjust(20), "  ", date
+		## calculate improvent of every run
+		results = [] # this list will hold test runs + improvents
+
+		runs += [runs.pop()] * 2 # append dummy entry to runs
+
+		# print header
+		print "\t\t %20s %15s %22s" % ("COUNT", "IMPROVEMENT", "DATE")
+
+		# print results
+		for i in range(0,len(runs)-1):
+			count,     date = runs[i]
+			nextCount, _    = runs[i+1]
+		
+			improvement = ((Decimal(nextCount)/Decimal(count) - 1) * 100)
+
+			print "\t\t %20d %15.2f%% %22s" % (count, improvement, date)
 
