@@ -24,7 +24,7 @@ gprof: LDFLAGS += -pg
 gprof: debug
 
 .PHONY: tests
-test:
+test: clean all
 	$(MAKE) test -C tests
 
 .PHONY: clean
