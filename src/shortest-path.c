@@ -3789,7 +3789,7 @@ int max_super=2;
 
 struct super_state *state_transitions=NULL;
 
-static int hash_super(PrimNum *start, int length)
+inline static int hash_super(PrimNum *start, int length)
 {
   int i, r;
   
@@ -3800,7 +3800,7 @@ static int hash_super(PrimNum *start, int length)
   return r & (HASH_SIZE-1);
 }
 
-static struct super_state **lookup_super(PrimNum *start, int length)
+inline static struct super_state **lookup_super(PrimNum *start, int length)
 {
   int hash=hash_super(start,length);
   struct super_table_entry *p = super_table[hash];
@@ -3814,7 +3814,7 @@ static struct super_state **lookup_super(PrimNum *start, int length)
   return NULL;
 }
 
-static void prepare_super_table()
+inline static void prepare_super_table()
 {
   int i;
   int nsupers = 0;
@@ -3855,26 +3855,26 @@ static void prepare_super_table()
 
 Cell npriminfos=0;
 
-static int cost_codesize(int prim)
+inline static int cost_codesize(int prim)
 {
   return priminfos[prim].length;
 }
 
-static int cost_ls(int prim)
+inline static int cost_ls(int prim)
 {
   struct cost *c = super_costs+prim;
 
   return c->loads + c->stores;
 }
 
-static int cost_lsu(int prim)
+inline static int cost_lsu(int prim)
 {
   struct cost *c = super_costs+prim;
 
   return c->loads + c->stores + c->updates;
 }
 
-static int cost_nexts(int prim)
+inline static int cost_nexts(int prim)
 {
   return 1;
 }
@@ -3906,7 +3906,7 @@ struct waypoint {
 		       * or this transition (does not change state) */
 };
 
-void init_waypoints(struct waypoint ws[])
+inline void init_waypoints(struct waypoint ws[])
 {
   int k;
 
@@ -3914,7 +3914,7 @@ void init_waypoints(struct waypoint ws[])
     ws[k].cost=INF_COST;
 }
 
-void transitions(struct waypoint inst[], struct waypoint trans[])
+inline void transitions(struct waypoint inst[], struct waypoint trans[])
 {
   int k;
   struct super_state *l;
@@ -3942,7 +3942,7 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
   }
 }
 
-void printinst(struct cost *c)
+inline void printinst(struct cost *c)
 {
   int i;
   static char *states="1023456789";
@@ -3959,7 +3959,7 @@ void printinst(struct cost *c)
 
 /* use dynamic programming to find the shortest paths within the basic
    block origs[0..ninsts-1] */
-void optimize_rewrite(PrimNum origs[], int ninsts)
+inline void optimize_rewrite(PrimNum origs[], int ninsts)
 {
   int i,j;
   static struct waypoint inst[MAX_BB+1][MAX_STATE];  /* before instruction*/
