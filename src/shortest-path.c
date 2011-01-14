@@ -3853,46 +3853,10 @@ static inline void prepare_super_table()
   }
 }
 
-Cell npriminfos=0;
-
 static inline int cost_codesize(int prim)
 {
   return priminfos[prim].length;
 }
-
-static inline int cost_ls(int prim)
-{
-  struct cost *c = super_costs+prim;
-
-  return c->loads + c->stores;
-}
-
-static inline int cost_lsu(int prim)
-{
-  struct cost *c = super_costs+prim;
-
-  return c->loads + c->stores + c->updates;
-}
-
-static inline int cost_nexts(int prim)
-{
-  return 1;
-}
-
-typedef int Costfunc(int);
-const Costfunc *ss_cost =  /* cost function for optimize_bb */
-cost_codesize;
-
-struct {
-  Costfunc *costfunc;
-  char *metricname;
-  long sum;
-} cost_sums[] = {
-  { cost_codesize, "codesize", 0 },
-  { cost_ls,       "ls",       0 },
-  { cost_lsu,      "lsu",      0 },
-  { cost_nexts,    "nexts",    0 }
-};
 
 #define MAX_BB 128 /* maximum number of instructions in BB */
 #define INF_COST 1000000 /* infinite cost */
@@ -3931,7 +3895,7 @@ static inline void transitions(struct waypoint inst[], struct waypoint trans[])
     struct waypoint *wo=&(inst[c->state_out]);
     if (wo->cost == INF_COST)
       continue;
-    jcost = wo->cost + ss_cost(s);
+    jcost = wo->cost + cost_codesize(s);
     if (jcost <= wi->cost) {
       wi->cost = jcost;
       wi->inst = s;
@@ -3988,7 +3952,7 @@ static inline void optimize_rewrite(PrimNum origs[], int ninsts)
 	  }
 	  if (wo->cost == INF_COST) 
 	    continue;
-	  jcost = wo->cost + ss_cost(s);
+	  jcost = wo->cost + cost_codesize(s);
 	  if (jcost <= wi->cost) {
 	    wi->cost = jcost;
 	    wi->inst = s;
