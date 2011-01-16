@@ -5,3 +5,7 @@ shortest-path
 
 # ignore temporaries
 *.~
+
+# intellij files
+*.iml
+.idea
