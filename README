@@ -1,0 +1,20 @@
+Wichtige infos:
+	Momentaner source ist NICHT ansi kompatibel. Es werden gcc extensions verwendet.
+
+	Das programm sollte von jedem tester mit seinem namen als erstel command line arg aufgerufen werden.
+	Der name kommt dann in die logs, damit wir die maschinen auseinander halten können
+		
+	z.b.:
+		./shortest-path fabian <input >output
+	erzeugt eine logfile mit namen 'fabian' angehängt im ordner logs
+	make test ruft shortest-path automatisch mit dem username des gerade eingeloggten users auf.
+
+	Wenn das Programm gestartet wird sollte sich im selben ordner ein ordner names 'logs' befinden,
+	die logs werden dann da rein geschrieben.
+
+Vorgeschlagene optimierungen:
+	1) Die globale Variable 'no_dynamic' wird statisch auf 0 gesetzt und nie wieder verändert.
+	   Man könnte sie einfach weglassen. (gcc -O3 entfernt es nicht selbst)
+	2) Das flag relocatable ist nur bei der allerersten instruktion wahr, und bei der ersten instruktion
+	   ist es unwichtig. --> alle vorkommisse von is_relocatable und relocatable kann man weglassen.
+

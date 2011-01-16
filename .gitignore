@@ -1,0 +1,12 @@
+
+# ignore binaries
+shortest-path
+shortest-path-O0
+shortest-path-O3
+*.[oa]
+
+# ignore temporaries
+*.~
+shortest-path-O0.c
+shortest-path-O3.c
+

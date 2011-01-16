@@ -25,6 +25,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef PERF
+#	include "perf.h"
+#endif
+
+#define ARRAY_LEN( ARR ) (sizeof( ARR )/sizeof( ARR[0] ))
+
 #define USE_TOS
 #define USE_FTOS
 #define HAS_FILE
@@ -4043,6 +4049,9 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
 
 int main(int argc, char **argv, char **env)
 {
+#ifdef PERF
+	startPerformanceCounters( argc > 1 ? argv[1] : NULL );
+#endif
   PrimNum data[MAX_INPUT_SIZE];
   PrimNum *start = data;
   size_t input_size;
@@ -4055,5 +4064,8 @@ int main(int argc, char **argv, char **env)
       optimize_rewrite(start, data+i-start);
       start = data+i+1;
     }
-  return 0;
+#ifdef PERF
+	stopPerformanceCounters();
+#endif
+ return 0;
 }
