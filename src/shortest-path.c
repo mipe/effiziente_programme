@@ -3952,6 +3952,7 @@ void printinst(struct cost *c)
    block origs[0..ninsts-1] */
 void optimize_rewrite(PrimNum origs[], int ninsts)
 {
+
   int i,j;
   static struct waypoint inst[MAX_BB+1][MAX_STATE];  /* before instruction*/
   static struct waypoint trans[MAX_BB+1][MAX_STATE]; /* before transition */
@@ -3960,6 +3961,13 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
   init_waypoints(inst[ninsts]);
   inst[ninsts][CANONICAL_STATE].cost=0;
   transitions(inst[ninsts],trans[ninsts]);
+
+//	PrimNum *end, *start = origs;
+
+//	for ( PrimNum *pn = origs; *pn != -1; pn++ ) {
+//
+//	}
+
   for (i=ninsts-1; i>=0; i--) {
     init_waypoints(inst[i]);
     for (j=1; j<=max_super && i+j<=ninsts; j++) {
@@ -4037,17 +4045,20 @@ int main(int argc, char **argv, char **env)
 	startPerformanceCounters( argc > 1 ? argv[1] : NULL );
 #endif
   PrimNum data[MAX_INPUT_SIZE];
-  PrimNum *start = data;
   size_t input_size;
-  int i;
 
   prepare_super_table();
   input_size = fread(data,sizeof(PrimNum),MAX_INPUT_SIZE,stdin);
-  for (i = 0; i<input_size; i++)
-    if (data[i] == -1) {
-      optimize_rewrite(start, data+i-start);
-      start = data+i+1;
+
+  PrimNum *start = data;
+  PrimNum *end   = data + input_size;
+
+  for ( PrimNum *pn = data; pn != end; pn++ ) {
+    if ( *pn == -1 ) {
+      optimize_rewrite( start, pn - start );
+      start = pn + 1;
     }
+  }
 #ifdef PERF
 	stopPerformanceCounters();
 #endif
