@@ -454,8 +454,8 @@ N_lit_execute,
   N_START_SUPER
 } PrimNum;
 
-static const int no_dynamic=0; /* if true, no code is generated
-					     dynamically */
+//static const int no_dynamic=0; /* if true, no code is generated
+					     //dynamically */
 static const int static_super_number = 10000; /* number of ss used if available */
 #define MAX_STATE 9 /* maximum number of states */
 static const int maxstates = MAX_STATE; /* number of states for stack caching */
@@ -2083,7 +2083,7 @@ const char const* const prim_names[]={
 
 static int is_relocatable(int p)
 {
-  return !no_dynamic && priminfos[p].start != NULL;
+  return priminfos[p].start != NULL;
 }
 
 /* static superinstruction stuff */
@@ -4014,17 +4014,21 @@ int main(int argc, char **argv, char **env)
 #ifdef PERF
 	startPerformanceCounters( argc, argv );
 #endif
-  PrimNum data[MAX_INPUT_SIZE];
-  PrimNum *start = data;
-  size_t input_size;
-  int i;
+ PrimNum data [MAX_INPUT_SIZE];
+ PrimNum *start;
+ size_t input_size;
+ PrimNum *i;
+ int counter;
 
   prepare_super_table();
-  input_size = fread(data,sizeof(PrimNum),MAX_INPUT_SIZE,stdin);
-  for (i = 0; i<input_size; i++)
-    if (data[i] == -1) {
-      optimize_rewrite(start, data+i-start);
-      start = data+i+1;
+  input_size = fread (data, sizeof (PrimNum), MAX_INPUT_SIZE, stdin);
+  for (i = start = data, counter = 0; input_size; input_size--, i++, counter++)
+    if (*i == -1)
+    {
+        optimize_rewrite (start, counter);
+        start = i;
+        start++;
+        counter = -1;
     }
 
 #ifdef PERF
