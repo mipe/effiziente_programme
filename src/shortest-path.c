@@ -3931,7 +3931,7 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
     struct waypoint *wo=&(inst[c->state_out]);
     if (wo->cost == INF_COST)
       continue;
-    jcost = wo->cost + ss_cost(s);
+    jcost = wo->cost + cost_codesize(s);
     if (jcost <= wi->cost) {
       wi->cost = jcost;
       wi->inst = s;
@@ -3988,7 +3988,7 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
 	  }
 	  if (wo->cost == INF_COST) 
 	    continue;
-	  jcost = wo->cost + ss_cost(s);
+	  jcost = wo->cost + cost_codesize(s);
 	  if (jcost <= wi->cost) {
 	    wi->cost = jcost;
 	    wi->inst = s;
