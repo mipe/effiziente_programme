@@ -2081,11 +2081,6 @@ const char const* const prim_names[]={
 "lit-execute",
 };
 
-static int is_relocatable(int p)
-{
-  return !NO_DYNAMIC && priminfos[p].start != NULL;
-}
-
 /* static superinstruction stuff */
 
 struct cost { /* super_info might be a more accurate name */
@@ -3827,10 +3822,8 @@ static void prepare_super_table()
       struct super_state *ss = malloc(sizeof(struct super_state));
       ss->super= i;
       if (c->offset==N_noop && i != N_noop) {
-	if (is_relocatable(i)) {
-	  ss->next = state_transitions;
-	  state_transitions = ss;
-	}
+	ss->next = state_transitions;
+	state_transitions = ss;
       } else if (ss_listp != NULL) {
 	ss->next = *ss_listp;
 	*ss_listp = ss;
@@ -3935,7 +3928,6 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
     if (jcost <= wi->cost) {
       wi->cost = jcost;
       wi->inst = s;
-      wi->relocatable = wo->relocatable;
       wi->no_transition = 0;
       /* if (ss_greedy) wi->cost = wo->cost ? */
     }
@@ -3982,17 +3974,13 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
 	  struct waypoint *wi=&(inst[i][c->state_in]);
 	  struct waypoint *wo=&(trans[i+j][c->state_out]);
 	  int no_transition = wo->no_transition;
-	  if (!(is_relocatable(s)) && !wo->relocatable) {
-	    wo=&(inst[i+j][c->state_out]);
-	    no_transition=1;
-	  }
+
 	  if (wo->cost == INF_COST) 
 	    continue;
 	  jcost = wo->cost + cost_codesize(s);
 	  if (jcost <= wi->cost) {
 	    wi->cost = jcost;
 	    wi->inst = s;
-	    wi->relocatable = is_relocatable(s);
 	    wi->no_transition = no_transition;
 	    /* if (ss_greedy) wi->cost = wo->cost ? */
 	  }
@@ -4004,8 +3992,7 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
   /* now rewrite the instructions */
   nextdyn=0;
   nextstate=CANONICAL_STATE;
-  no_transition = ((!trans[0][nextstate].relocatable) 
-		   ||trans[0][nextstate].no_transition);
+  no_transition = trans[0][nextstate].no_transition;
   for (i=0; i<ninsts; i++) {
     if (i==nextdyn) {
       if (!no_transition) {
