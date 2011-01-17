@@ -3841,7 +3841,7 @@ struct waypoint {
 //    ws[k].cost=INF_COST;
 //}
 
-void transitions(struct waypoint inst[], struct waypoint trans[])
+static inline void transitions(struct waypoint inst[], struct waypoint trans[])
 {
   for ( int k=MAX_STATE - 1; k>= 0; k--) {
     trans[k] = inst[k];
@@ -3869,7 +3869,7 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
   }
 }
 
-void printinst(struct cost *c)
+static inline void printinst(struct cost *c)
 {
   int i;
   static char *states="1023456789";
@@ -3886,7 +3886,7 @@ void printinst(struct cost *c)
 
 /* use dynamic programming to find the shortest paths within the basic
    block origs[0..ninsts-1] */
-void optimize_rewrite(PrimNum origs[], int ninsts)
+static inline void optimize_rewrite(PrimNum origs[], int ninsts)
 {
 
   int i,j;
