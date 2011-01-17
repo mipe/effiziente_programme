@@ -3848,12 +3848,11 @@ struct waypoint {
 
 void transitions(struct waypoint inst[], struct waypoint trans[])
 {
-  int k;
-
-  for (k=0; k<MAX_STATE; k++) {
+  for ( int k=MAX_STATE - 1; k>= 0; k--) {
     trans[k] = inst[k];
     trans[k].no_transition = 1;
   }
+
   const PrimNum*       start = state_transitions;
   const PrimNum* const end   = state_transitions + ARRAY_LEN( state_transitions );
 
@@ -3901,12 +3900,11 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
   int nextdyn, nextstate, no_transition;
   
   //init_waypoints();
-  int k;
-
-  for (k=0; k<MAX_STATE; k++)
+//  struct waypoint* wp = inst[ninsts];
+  for ( int k=MAX_STATE - 1; k>0; k--)
     inst[ninsts][k].cost=INF_COST;
-
   inst[ninsts][CANONICAL_STATE].cost=0;
+
   transitions(inst[ninsts],trans[ninsts]);
 
   for (i=ninsts-1; i>=0; i--) {
