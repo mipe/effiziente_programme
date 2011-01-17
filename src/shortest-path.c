@@ -3838,13 +3838,13 @@ struct waypoint {
 		       * or this transition (does not change state) */
 };
 
-void init_waypoints(struct waypoint ws[])
-{
-  int k;
-
-  for (k=0; k<MAX_STATE; k++)
-    ws[k].cost=INF_COST;
-}
+//void init_waypoints(struct waypoint ws[])
+//{
+//  int k;
+//
+//  for (k=0; k<MAX_STATE; k++)
+//    ws[k].cost=INF_COST;
+//}
 
 void transitions(struct waypoint inst[], struct waypoint trans[])
 {
@@ -3900,18 +3900,21 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
   static struct waypoint trans[MAX_BB+1][MAX_STATE]; /* before transition */
   int nextdyn, nextstate, no_transition;
   
-  init_waypoints(inst[ninsts]);
+  //init_waypoints();
+  int k;
+
+  for (k=0; k<MAX_STATE; k++)
+    inst[ninsts][k].cost=INF_COST;
+
   inst[ninsts][CANONICAL_STATE].cost=0;
   transitions(inst[ninsts],trans[ninsts]);
 
-//	PrimNum *end, *start = origs;
-
-//	for ( PrimNum *pn = origs; *pn != -1; pn++ ) {
-//
-//	}
-
   for (i=ninsts-1; i>=0; i--) {
-    init_waypoints(inst[i]);
+    //init_waypoints(inst[i]);
+    int k;
+    for (k=0; k<MAX_STATE; k++)
+        inst[i][k].cost=INF_COST;
+
     for (j=1; j<=MAX_SUPER && i+j<=ninsts; j++) {
       struct SuperState *superp = lookup_super(origs+i, j);
       if ( superp!=NULL ) {
