@@ -1,0 +1,4 @@
+           194328443 PAPI_TOT_INS    Instructions completed
+            95741762 PAPI_TOT_CYC    Total cycles
+               63199 PAPI_L2_TCM     Level 2 cache misses
+              559481 PAPI_BR_MSP     Conditional branch instructions mispredicted
