@@ -3874,12 +3874,8 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
   }
 }
 
- static int calls = 0;
 void printinst(struct cost *c)
 {
-
- calls++;
-
   int i;
   static char *states="1023456789";
 
@@ -3999,30 +3995,15 @@ int main(int argc, char **argv, char **env)
 //  prepare_super_table();
   input_size = fread(data,sizeof(PrimNum),MAX_INPUT_SIZE,stdin);
 
-  PrimNum *basic_blocks[MAX_INPUT_SIZE];
-  int numBBs = 0;
-
   PrimNum *start = data;
   PrimNum *end   = data + input_size;
 
   for ( PrimNum *pn = data; pn != end; pn++ ) {
     if ( *pn == -1 ) {
-	basic_blocks[numBBs] = pn;
-        assert( data[pn-data] == -1 );
-        numBBs++;
-    }
-  }  
-
-  PrimNum **start2 = basic_blocks;
-  PrimNum **end2   = basic_blocks + numBBs;
-
-  for ( ; start2 != end2; start2++ ) {
-      PrimNum *pn = *start2;
       optimize_rewrite( start, pn - start );
       start = pn + 1;
+    }
   }
-assert( calls <= input_size );
-
 #ifdef PERF
 	stopPerformanceCounters();
 #endif
