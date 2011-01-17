@@ -3767,83 +3767,23 @@ struct cost super_costs[] = {
 {-1, 0, 0, 0 , 7, 8,0,N_noop, 1}, /* noop */
 };
 
-struct super_state {
-  struct super_state *next;
-  PrimNum super;
+#include "hash.c"
+
+#define MAX_SUPER 3
+const PrimNum state_transitions[] = { 
+	1186, 1185, 1184, 1183, 1182, 1181, 1180, 1179, 1178, 1177,
+	1176, 1175, 1174, 1173, 1172, 1171, 1170, 1169, 1168, 1167,
+	1166, 1165, 1164, 1163, 1162, 1161, 1160, 1159, 1158, 1157, 
+	1156, 1155, 1154, 1153, 1152, 1151, 1150, 1149, 1148, 1147, 
+	1146, 1145, 1144, 1143, 1142, 1141, 1140, 1139, 1138, 1137, 
+	1136, 1135, 1134, 1133, 1132, 1131, 1130, 1129, 1128, 1127, 
+	1126, 1125, 1124, 1123, 1122, 1121, 1120, 1119, 1118, 1117, 
+	1116, 1115, 
 };
 
-#define HASH_SIZE 256
-
-struct super_table_entry {
-  struct super_table_entry *next;
-  PrimNum *start;
-  short length;
-  struct super_state *ss_list; /* list of supers */
-} *super_table[HASH_SIZE];
-int max_super=2;
-
-struct super_state *state_transitions=NULL;
-
-static int hash_super(PrimNum *start, int length)
+static struct SuperState *lookup_super(PrimNum *start, int length)
 {
-  int i, r;
-  
-  for (i=0, r=0; i<length; i++) {
-    r <<= 1;
-    r += start[i];
-  }
-  return r & (HASH_SIZE-1);
-}
-
-static struct super_state **lookup_super(PrimNum *start, int length)
-{
-  int hash=hash_super(start,length);
-  struct super_table_entry *p = super_table[hash];
-
-  /* assert(length >= 2); */
-  for (; p!=NULL; p = p->next) {
-    if (length == p->length &&
-	memcmp((char *)p->start, (char *)start, length*sizeof(PrimNum))==0)
-      return &(p->ss_list);
-  }
-  return NULL;
-}
-
-static void prepare_super_table()
-{
-  int i;
-  int nsupers = 0;
-
-  for (i=0; i<sizeof(super_costs)/sizeof(super_costs[0]); i++) {
-    struct cost *c = &super_costs[i];
-    if ((c->length < 2 || nsupers < STATIC_SUPER_NUMBER) &&
-	c->state_in < MAX_STATE && c->state_out < MAX_STATE) {
-      struct super_state **ss_listp= lookup_super(super2+c->offset, c->length);
-      struct super_state *ss = malloc(sizeof(struct super_state));
-      ss->super= i;
-      if (c->offset==N_noop && i != N_noop) {
-	ss->next = state_transitions;
-	state_transitions = ss;
-      } else if (ss_listp != NULL) {
-	ss->next = *ss_listp;
-	*ss_listp = ss;
-      } else {
-	int hash = hash_super(super2+c->offset, c->length);
-	struct super_table_entry **p = &super_table[hash];
-	struct super_table_entry *e = malloc(sizeof(struct super_table_entry));
-	ss->next = NULL;
-	e->next = *p;
-	e->start = super2 + c->offset;
-	e->length = c->length;
-	e->ss_list = ss;
-	*p = e;
-      }
-      if (c->length > max_super)
-	max_super = c->length;
-      if (c->length >= 2)
-	nsupers++;
-    }
-  }
+   return in_word_set( (char*) start, length * sizeof(PrimNum) );
 }
 
 Cell npriminfos=0;
@@ -3909,14 +3849,16 @@ void init_waypoints(struct waypoint ws[])
 void transitions(struct waypoint inst[], struct waypoint trans[])
 {
   int k;
-  struct super_state *l;
-  
+
   for (k=0; k<MAX_STATE; k++) {
     trans[k] = inst[k];
     trans[k].no_transition = 1;
   }
-  for (l = state_transitions; l != NULL; l = l->next) {
-    PrimNum s = l->super;
+  const PrimNum*       start = state_transitions;
+  const PrimNum* const end   = state_transitions + ARRAY_LEN( state_transitions );
+
+  for ( ; start != end; start++ ) {
+    PrimNum s = *start;
     int jcost;
     struct cost *c=super_costs+s;
     struct waypoint *wi=&(trans[c->state_in]);
@@ -3970,12 +3912,14 @@ void optimize_rewrite(PrimNum origs[], int ninsts)
 
   for (i=ninsts-1; i>=0; i--) {
     init_waypoints(inst[i]);
-    for (j=1; j<=max_super && i+j<=ninsts; j++) {
-      struct super_state **superp = lookup_super(origs+i, j);
-      if (superp!=NULL) {
-	struct super_state *supers = *superp;
-	for (; supers!=NULL; supers = supers->next) {
-	  PrimNum s = supers->super;
+    for (j=1; j<=MAX_SUPER && i+j<=ninsts; j++) {
+      struct SuperState *superp = lookup_super(origs+i, j);
+      if ( superp!=NULL ) {
+	const PrimNum* supers   = superp->supers;
+	const PrimNum* superEnd = supers + superp->length;
+
+	for ( ; supers != superEnd; supers++ ) {
+	  PrimNum s = *supers;
 	  int jcost;
 	  struct cost *c=super_costs+s;
 	  struct waypoint *wi=&(inst[i][c->state_in]);
@@ -4047,7 +3991,7 @@ int main(int argc, char **argv, char **env)
   PrimNum data[MAX_INPUT_SIZE];
   size_t input_size;
 
-  prepare_super_table();
+//  prepare_super_table();
   input_size = fread(data,sizeof(PrimNum),MAX_INPUT_SIZE,stdin);
 
   PrimNum *start = data;
