@@ -3817,7 +3817,9 @@ static inline void transitions(struct waypoint inst[], struct waypoint trans[])
   }
 }
 
-static char  buffer[MAX_PRIM_NAME_LEN * MAX_SUPER * MAX_BB * 2];
+#define MAX_INPUT_SIZE 100000
+
+static char  buffer[MAX_PRIM_NAME_LEN * MAX_SUPER * MAX_INPUT_SIZE * 2];
 static char *out = buffer;
 
 static inline void printinst(struct cost *c)
@@ -3850,9 +3852,10 @@ static inline void printinst(struct cost *c)
 static inline void printBasicBlock() {
 	*out = '\n';
 	out++;
-	*out = 0;
+//	*out = 0;
 
-	fputs( buffer, stdout );
+	write( 1, buffer, out - buffer );
+//	fputs( buffer, stdout );
 	out = buffer;
 }
 
@@ -3948,8 +3951,6 @@ static inline void optimize_rewrite(PrimNum origs[], int ninsts)
   printBasicBlock();
   assert(nextstate==CANONICAL_STATE);
 }
-
-#define MAX_INPUT_SIZE 100000
 
 int main(int argc, char **argv, char **env)
 {
