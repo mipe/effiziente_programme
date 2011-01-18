@@ -24,7 +24,7 @@ struct TableEntry {
 #define MAX_HASH_VALUE 520
 /* maximum key range = 517, duplicates = 0 */
 
-static struct SuperState *lookup_super(PrimNum *start, int length)
+static struct SuperState const *lookup_super(PrimNum *start, int length)
 {
   static const unsigned short asso_values[] =
     {
@@ -603,7 +603,7 @@ static struct SuperState *lookup_super(PrimNum *start, int length)
 	}
 
       if (hash <= MAX_HASH_VALUE && hash >= 0) {
-        struct TableEntry *entry = &wordlist[hash];
+        struct TableEntry const *entry = &wordlist[hash];
 
         if (len == entry->length)
           {
