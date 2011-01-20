@@ -3837,12 +3837,13 @@ static void prepare_super_table()
 	ss->next = *ss_listp;
 	*ss_listp = ss;
       } else {
-	int hash = hash_super(super2+c->offset, c->length);
+    int tmp = super2 + c->offset;
+	int hash = hash_super(tmp, c->length);
 	struct super_table_entry **p = &super_table[hash];
 	struct super_table_entry *e = malloc(sizeof(struct super_table_entry));
 	ss->next = NULL;
 	e->next = *p;
-	e->start = super2 + c->offset;
+	e->start =tmp;
 	e->length = c->length;
 	e->ss_list = ss;
 	*p = e;
