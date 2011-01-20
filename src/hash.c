@@ -24,15 +24,7 @@ struct TableEntry {
 #define MAX_HASH_VALUE 520
 /* maximum key range = 517, duplicates = 0 */
 
-#ifdef __GNUC__
-__inline
-#else
-#ifdef __cplusplus
-inline
-#endif
-#endif
-static unsigned int
-hash (register const char *str, register unsigned int len)
+static struct SuperState *lookup_super(PrimNum *start, int length)
 {
   static unsigned short asso_values[] =
     {
@@ -63,40 +55,6 @@ hash (register const char *str, register unsigned int len)
        16,  11,   6,   1, 508, 503, 498, 493, 488, 483,
       478, 473, 468, 128,  63, 510,  80
     };
-  register int hval = len;
-
-  switch (hval)
-    {
-      default:
-        hval += asso_values[(unsigned char)str[8]+1];
-      /*FALLTHROUGH*/
-      case 8:
-      case 7:
-      case 6:
-      case 5:
-        hval += asso_values[(unsigned char)str[4]];
-      /*FALLTHROUGH*/
-      case 4:
-      case 3:
-      case 2:
-        hval += asso_values[(unsigned char)str[1]];
-      /*FALLTHROUGH*/
-      case 1:
-        hval += asso_values[(unsigned char)str[0]+1];
-        break;
-    }
-  return hval;
-}
-
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
-struct SuperState*
-in_word_set (register const char *str, register unsigned int len)
-{
   static struct TableEntry wordlist[] =
     {
       {"",0}, {"",0}, {"",0}, {"",0},
@@ -617,13 +575,35 @@ in_word_set (register const char *str, register unsigned int len)
       {"\376\000\000\000",                                  4, {{ 254, }, 1}},
       {"\207\000\000\000",                                  4, {{ 135, }, 1}}
     };
+  register const char *str  = (const char*) start;
+  register unsigned    len = length * sizeof(PrimNum);
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      register unsigned hash = len;
 
-      if (key <= MAX_HASH_VALUE && key >= 0) {
-        struct TableEntry *entry = &wordlist[key];
+	switch (hash) {
+	      default:
+	        hash += asso_values[(unsigned char)str[8]+1];
+	      /*FALLTHROUGH*/
+	      case 8:
+	      case 7:
+	      case 6:
+	      case 5:
+	        hash += asso_values[(unsigned char)str[4]];
+	      /*FALLTHROUGH*/
+	      case 4:
+	      case 3:
+	      case 2:
+	        hash += asso_values[(unsigned char)str[1]];
+	      /*FALLTHROUGH*/
+	      case 1:
+	        hash += asso_values[(unsigned char)str[0]+1];
+	        break;
+	}
+
+      if (hash <= MAX_HASH_VALUE && hash >= 0) {
+        struct TableEntry *entry = &wordlist[hash];
 
         if (len == entry->length)
           {

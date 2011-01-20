@@ -3781,11 +3781,6 @@ const PrimNum state_transitions[] = {
 	1116, 1115, 
 };
 
-static struct SuperState *lookup_super(PrimNum *start, int length)
-{
-   return in_word_set( (char*) start, length * sizeof(PrimNum) );
-}
-
 Cell npriminfos=0;
 
 static int cost_codesize(int prim)
