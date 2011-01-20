@@ -3895,7 +3895,6 @@ struct {
 struct waypoint {
   int cost;     /* the cost from here to the end */
   PrimNum inst; /* the inst used from here to the next waypoint */
-  char relocatable; /* the last non-transition was relocatable */
   char no_transition; /* don't use the next transition (relocatability)
 		       * or this transition (does not change state) */
 };
