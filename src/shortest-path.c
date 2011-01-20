@@ -3853,9 +3853,9 @@ static inline void printinst(struct cost *c)
 static inline void printBasicBlock() {
 	*out = '\n';
 	out++;
-	*out = 0;
+//	*out = 0;
 
-	fputs( buffer, stdout );
+	fwrite( buffer, 1, out - buffer, stdout );
 	out = buffer;
 }
 
