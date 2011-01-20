@@ -3853,10 +3853,6 @@ static inline void printinst(struct cost *c)
 static inline void printBasicBlock() {
 	*out = '\n';
 	out++;
-//	*out = 0;
-
-	fwrite( buffer, 1, out - buffer, stdout );
-	out = buffer;
 }
 
 /* use dynamic programming to find the shortest paths within the basic
@@ -3979,6 +3975,12 @@ int main(int argc, char **argv, char **env)
       start = pn + 1;
     }
   }
+
+//	*out = 0;
+
+	fwrite( buffer, 1, out - buffer, stdout );
+//	out = buffer;
+
 #ifdef PERF
 	stopPerformanceCounters();
 #endif
