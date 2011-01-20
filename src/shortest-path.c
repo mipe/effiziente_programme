@@ -456,11 +456,9 @@ N_lit_execute,
   N_START_SUPER
 } PrimNum;
 
-static int no_dynamic=0; /* if true, no code is generated
-					     dynamically */
-static int static_super_number = 10000; /* number of ss used if available */
-#define MAX_STATE 9 /* maximum number of states */
-static int maxstates = MAX_STATE; /* number of states for stack caching */
+#define NO_DYNAMIC          0      /* if true, no code is generated dynamically */
+#define STATIC_SUPER_NUMBER 10000  /* number of ss used if available */
+#define MAX_STATE           9      /* maximum number of states */
 
 FILE *output;
 
@@ -2085,7 +2083,7 @@ const char const* const prim_names[]={
 
 static int is_relocatable(int p)
 {
-  return !no_dynamic && priminfos[p].start != NULL;
+  return !NO_DYNAMIC && priminfos[p].start != NULL;
 }
 
 /* static superinstruction stuff */
@@ -3823,8 +3821,8 @@ static void prepare_super_table()
 
   for (i=0; i<sizeof(super_costs)/sizeof(super_costs[0]); i++) {
     struct cost *c = &super_costs[i];
-    if ((c->length < 2 || nsupers < static_super_number) &&
-	c->state_in < maxstates && c->state_out < maxstates) {
+    if ((c->length < 2 || nsupers < STATIC_SUPER_NUMBER) &&
+	c->state_in < MAX_STATE && c->state_out < MAX_STATE) {
       struct super_state **ss_listp= lookup_super(super2+c->offset, c->length);
       struct super_state *ss = malloc(sizeof(struct super_state));
       ss->super= i;
@@ -3909,6 +3907,7 @@ struct waypoint {
 		       * or this transition (does not change state) */
 };
 
+
 //void init_waypoints(struct waypoint ws[])
 //{
 //  int k;
@@ -3922,7 +3921,7 @@ void transitions(struct waypoint inst[], struct waypoint trans[])
   int k;
   struct super_state *l;
   
-  for (k=0; k<maxstates; k++) {
+  for (k=0; k<MAX_STATE; k++) {
     trans[k] = inst[k];
     trans[k].no_transition = 1;
   }
