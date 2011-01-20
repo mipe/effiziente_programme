@@ -26,7 +26,7 @@ struct TableEntry {
 
 static struct SuperState *lookup_super(PrimNum *start, int length)
 {
-  static unsigned short asso_values[] =
+  static const unsigned short asso_values[] =
     {
         5,   0, 463, 453, 443, 433, 423, 413, 403, 393,
       383, 373, 363, 353,  35,  70, 343, 333, 323, 313,
@@ -55,7 +55,7 @@ static struct SuperState *lookup_super(PrimNum *start, int length)
        16,  11,   6,   1, 508, 503, 498, 493, 488, 483,
       478, 473, 468, 128,  63, 510,  80
     };
-  static struct TableEntry wordlist[] =
+  static const struct TableEntry wordlist[] =
     {
       {"",0}, {"",0}, {"",0}, {"",0},
       {"\000\001\000\000",                                  4, {{ 256, }, 1}},
