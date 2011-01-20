@@ -3818,12 +3818,12 @@ static inline void transitions(struct waypoint inst[], struct waypoint trans[])
   }
 }
 
+static char  buffer[MAX_PRIM_NAME_LEN * MAX_SUPER * MAX_BB * 2];
+static char *out = buffer;
+
 static inline void printinst(struct cost *c)
 {
   static char *states="1023456789";
-  static char buffer[MAX_PRIM_NAME_LEN * MAX_SUPER * 2];
-
-	char* out = buffer;
 
 	*out = states[c->state_in];
 	out++;
@@ -3847,12 +3847,14 @@ static inline void printinst(struct cost *c)
 	out++;
 	*out = ' ';
 	out++;
+}
+static inline void printBasicBlock() {
+	*out = '\n';
+	out++;
 	*out = 0;
 
 	fputs( buffer, stdout );
-}
-static inline void printBasicBlock() {
-
+	out = buffer;
 }
 
 /* use dynamic programming to find the shortest paths within the basic
@@ -3951,7 +3953,7 @@ static inline void optimize_rewrite(PrimNum origs[], int ninsts)
     printinst(c);
     nextstate = c->state_out;
   }
-  printf("\n");
+  printBasicBlock();
   assert(nextstate==CANONICAL_STATE);
 }
 
