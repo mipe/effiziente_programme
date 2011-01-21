@@ -585,18 +585,10 @@ static struct SuperState const *lookup_super(PrimNum *start, int length)
 	switch (hash) {
 	      default:
 	        hash += asso_values[(unsigned char)str[8]+1];
-	      /*FALLTHROUGH*/
-	      case 8:
-	      case 7:
-	      case 6:
-	      case 5:
+	      case 8: case 7: case 6: case 5:
 	        hash += asso_values[(unsigned char)str[4]];
-	      /*FALLTHROUGH*/
-	      case 4:
-	      case 3:
-	      case 2:
+	      case 4: case 3: case 2:
 	        hash += asso_values[(unsigned char)str[1]];
-	      /*FALLTHROUGH*/
 	      case 1:
 	        hash += asso_values[(unsigned char)str[0]+1];
 	        break;
